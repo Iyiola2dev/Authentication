@@ -1,51 +1,43 @@
-import { Schema, model} from 'mongoose';
+import { Schema, model } from 'mongoose';
 import crypto from "crypto";
 
 const userSchema = new Schema({
-    name:{
+    name: {
         type: String,
         required: true,
         trim: true
     },
-    lastName:{
+    userName: {
         type: String,
         required: true,
         trim: true
     },
-    userName:{
-        type: String,
-        required: true,
-        trim: true
-    },
-    email:{
+    email: {
         type: String,
         required: true,
         unique: true,
-        lowercase:true,
+        lowercase: true,
         trim: true
     },
-    password:{
+    password: {
         type: String,
         required: true,
-        unique: true
+        // Remove unique constraint for passwords
+        // unique: true
     },
-    createdAt:{
+    createdAt: {
         type: Date,
-       default: Date.now
+        default: Date.now
     },
-    role:{
-        type: String,
-        enum: ["user", "admin", "staff"],
-       required: true,
-    },
-    secretKey:{
+    secretKey: {
         type: String,
         default: function () {
-            return crypto.randomBytes(16).toString("hex")
-         },
+            return crypto.randomBytes(16).toString("hex");
+        },
     }
 });
 
-const User = model("User", userSchema)
+// Change the model name from "ievent" to "User"
+const User = model("User", userSchema);
 
 export default User;
