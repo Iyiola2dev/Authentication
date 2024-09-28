@@ -21,7 +21,7 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send form data to API
-    axios.post("http://localhost:3000/api/v1/register", formData)
+    axios.post("http://localhost:3000/api/v1/user/register", formData)
       .then((res) => {
         console.log(res)
         // Redirect to login page
