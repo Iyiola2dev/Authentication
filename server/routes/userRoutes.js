@@ -1,4 +1,5 @@
 import express from "express";
+import { createUser } from "../controllers/userController.js";
 
 //The router is named userRouter i could have named it anything
 const router = express.Router();
@@ -9,9 +10,6 @@ router.get("/login", (req, res) => {
 });
 
 //The route for registering a user
-router.post("/register", (req, res) => {
-  console.log(req.body);
-  res.status(200).send(req.body);
-});
+router.post("/register", createUser);
 
 export default router;

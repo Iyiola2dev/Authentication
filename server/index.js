@@ -13,7 +13,7 @@ const Port = 3000;
 app.use(express.json());
 app.use(cors());
 
-app.use("/api/v1", userRouter)
+app.use("/api/v1/user", userRouter)
 app.listen(Port, ()=>{
     console.log(`Server is running at http://localhost:${Port}`);
 })
