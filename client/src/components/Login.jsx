@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,17 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+     // Send form data to API
+     axios.post("http://localhost:3000/api/v1/user/login", formData)
+     .then((res) => {
+       console.log(res)
+       // Redirect to login page
+      //  navigate('/login');
+     })
+     .catch((err) => {
+       console.log(err);
+     });
     // Handle login logic (e.g., send data to API)
     console.log("Login data:", formData);
   };

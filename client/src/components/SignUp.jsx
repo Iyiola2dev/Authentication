@@ -5,7 +5,7 @@ import axios from 'axios';
 const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
-    username: '',  // Added username field
+    userName: '',  // Added username field
     email: '',
     password: '',
   });
@@ -61,9 +61,9 @@ const SignUp = () => {
             </label>
             <input
               type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              id="userName"
+              name="userName"
+              value={formData.userName}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Enter your username"
