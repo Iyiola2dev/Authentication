@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
 
     // Create a token for the user
     const token = jwt.sign(
-      { email: user.email, id: user._id },
+      { email: user.email, _id: user._id },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "1h" }
     );
@@ -91,42 +91,37 @@ export const loginUser = async (req, res) => {
   }
 };
 
-
 //Chaning old password to a new password
 export const updatePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const {userName} = req.params;
+    const { userName } = req.params;
     const user = await User.findOne({ userName });
     if (!user) {
-        return res.status(401).json({ message: "Invaild credentials" });
-      }
-     
-//
-      const changedPassword = await bcrypt.compare(oldPassword, user.password )
-   
-      if (!changedPassword) {
-        return res.status(401).json({ message: "Incorrect old password" });
-      }
-  
-    if ( oldPassword === newPassword) {
+      return res.status(401).json({ message: "Invaild credentials" });
+    }
+
+    //
+    const changedPassword = await bcrypt.compare(oldPassword, user.password);
+
+    if (!changedPassword) {
+      return res.status(401).json({ message: "Incorrect old password" });
+    }
+
+    if (oldPassword === newPassword) {
       return res.status(404).json({ message: "Input NewPassword" });
     }
     const saltRounds = 10;
     const newPasswordHashed = await bcrypt.hash(newPassword, saltRounds);
 
-    user.password = newPasswordHashed
+    user.password = newPasswordHashed;
     await user.save();
     return res.status(200).json({ message: "Password updated successfully" });
-
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Error fetching users" });
   }
 };
-
-
-
 
 export const createEvent = async (req, res) => {
   const {
@@ -142,11 +137,13 @@ export const createEvent = async (req, res) => {
     category,
   } = req.body;
 
-  // Ensure the user ID is available
-  const userId = req.userId; // This should be set in your authentication middleware
+  // The useer is set in my middleware jwtAuth
+  const userId = req.userId; // And this is set in my authentication middleware
 
   if (!userId) {
-    return res.status(401).json({ message: "Unauthorized: User ID not found." });
+    return res
+      .status(401)
+      .json({ message: "Unauthorized: User ID not found." });
   }
 
   // Validate category if provided
@@ -155,7 +152,7 @@ export const createEvent = async (req, res) => {
   }
 
   try {
-    // Create a new event, associating it with the logged-in user
+    // Creating a new event, and associating it with the logged-in user
     const newEvent = new Ievent({
       title,
       description,
@@ -166,16 +163,19 @@ export const createEvent = async (req, res) => {
       price,
       isFree,
       url,
-      category: category ? mongoose.Types.ObjectId(category) : undefined, // Convert string to ObjectId if category is provided
+      category: category, //This was where my error was coming from...i was passing category as a string instead of an object id
       organizer: userId, // Set the user ID as the organizer
     });
 
     await newEvent.save(); // Save the event to the database
 
-    res.status(201).json({ message: "Event created successfully", event: newEvent });
+    res
+      .status(201)
+      .json({ message: "Event created successfully", event: newEvent });
   } catch (err) {
     console.error(err); // Log the error for debugging
-    res.status(500).json({ message: "Error creating event", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error creating event", error: err.message });
   }
 };
-
