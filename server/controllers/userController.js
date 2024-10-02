@@ -126,9 +126,33 @@ export const updatePassword = async (req, res) => {
 };
 
 
-//creation of event
+
+
 export const createEvent = async (req, res) => {
-  const { title, description, location, startDateTime, endDateTime, imageUrl, price, isFree, url, category } = req.body;
+  const {
+    title,
+    description,
+    location,
+    startDateTime,
+    endDateTime,
+    imageUrl,
+    price,
+    isFree,
+    url,
+    category,
+  } = req.body;
+
+  // Ensure the user ID is available
+  const userId = req.userId; // This should be set in your authentication middleware
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized: User ID not found." });
+  }
+
+  // Validate category if provided
+  if (category && !mongoose.Types.ObjectId.isValid(category)) {
+    return res.status(400).json({ message: "Invalid category ID." });
+  }
 
   try {
     // Create a new event, associating it with the logged-in user
@@ -142,15 +166,16 @@ export const createEvent = async (req, res) => {
       price,
       isFree,
       url,
-      //So i had an error here i had to change category to mongoose.Types.ObjectId(category) so Convert string to ObjectId
-      category: mongoose.Types.ObjectId(category), // Convert string to ObjectId
-      organizer: req.userId, // Set the user ID as the organizer
+      category: category ? mongoose.Types.ObjectId(category) : undefined, // Convert string to ObjectId if category is provided
+      organizer: userId, // Set the user ID as the organizer
     });
 
     await newEvent.save(); // Save the event to the database
 
     res.status(201).json({ message: "Event created successfully", event: newEvent });
   } catch (err) {
+    console.error(err); // Log the error for debugging
     res.status(500).json({ message: "Error creating event", error: err.message });
   }
-}
+};
+
