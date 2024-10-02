@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const eventSchema = new Schema({
   title: { type: String, required: true },
-  description: { type: String }, // Corrected "decription" to "description"
+  description: { type: String }, 
   location: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   imageUrl: { type: String, required: true },
