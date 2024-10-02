@@ -2,6 +2,9 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import Ievent from "../models/eventModel.js";
+//this was imported so that i can convert string to object id
+import mongoose from "mongoose";
 
 dotenv.config();
 
@@ -87,3 +90,67 @@ export const loginUser = async (req, res) => {
     });
   }
 };
+
+
+//Chaning old password to a new password
+export const updatePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const {userName} = req.params;
+    const user = await User.findOne({ userName });
+    if (!user) {
+        return res.status(401).json({ message: "Invaild credentials" });
+      }
+     
+//
+      const changedPassword = await bcrypt.compare(oldPassword, user.password )
+   
+      if (!changedPassword) {
+        return res.status(401).json({ message: "Incorrect old password" });
+      }
+  
+    if ( oldPassword === newPassword) {
+      return res.status(404).json({ message: "Input NewPassword" });
+    }
+    const saltRounds = 10;
+    const newPasswordHashed = await bcrypt.hash(newPassword, saltRounds);
+
+    user.password = newPasswordHashed
+    await user.save();
+    return res.status(200).json({ message: "Password updated successfully" });
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Error fetching users" });
+  }
+};
+
+
+//creation of event
+export const createEvent = async (req, res) => {
+  const { title, description, location, startDateTime, endDateTime, imageUrl, price, isFree, url, category } = req.body;
+
+  try {
+    // Create a new event, associating it with the logged-in user
+    const newEvent = new Ievent({
+      title,
+      description,
+      location,
+      startDateTime,
+      endDateTime,
+      imageUrl,
+      price,
+      isFree,
+      url,
+      //So i had an error here i had to change category to mongoose.Types.ObjectId(category) so Convert string to ObjectId
+      category: mongoose.Types.ObjectId(category), // Convert string to ObjectId
+      organizer: req.userId, // Set the user ID as the organizer
+    });
+
+    await newEvent.save(); // Save the event to the database
+
+    res.status(201).json({ message: "Event created successfully", event: newEvent });
+  } catch (err) {
+    res.status(500).json({ message: "Error creating event", error: err.message });
+  }
+}
