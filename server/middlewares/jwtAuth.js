@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 
-
 //create jwt middleware to check secure authentification
 export const verifyJWToken = async (req, res, next) => {
   try {
@@ -19,6 +18,8 @@ export const verifyJWToken = async (req, res, next) => {
       });
     }
     req.user = decoded;
+    req.userId = decoded._id;
+    console.log("User ID set in request:", req.userId); // Add logging
     console.log(req.user);
     next();
   } catch (error) {
@@ -28,5 +29,3 @@ export const verifyJWToken = async (req, res, next) => {
     });
   }
 };
-
-
