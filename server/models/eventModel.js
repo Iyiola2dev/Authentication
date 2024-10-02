@@ -1,38 +1,20 @@
-import { Schema, model} from 'mongoose';
-import crypto from "crypto";
+import { Schema, model } from "mongoose";
 
 const eventSchema = new Schema({
-    eventName: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    eventDate: {
-        type: Date,
-        required: true
-    },
-    location: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    description: {
-        type: String,
-        trim: true
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-   
-    secretKey:{
-        type: String,
-        default: function () {
-            return crypto.randomBytes(16).toString("hex")
-         },
-    }
+  title: { type: String, required: true },
+  description: { type: String }, // Corrected "decription" to "description"
+  location: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  imageUrl: { type: String, required: true },
+  startDateTime: { type: Date, default: Date.now },
+  endDateTime: { type: Date, default: Date.now },
+  price: { type: String },
+  isFree: { type: Boolean, default: false },
+  url: { type: String },
+  category: { type: Schema.Types.ObjectId, ref: "Category" }, // Reference to Category model
+  organizer: { type: Schema.Types.ObjectId, ref: "User" }, // Reference to User model
 });
 
-const Ievent = model("ievents", eventSchema); // Event-specific schema
+const Ievent = model("ievents", eventSchema);
 
 export default Ievent;
