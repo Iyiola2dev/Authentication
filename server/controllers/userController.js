@@ -137,7 +137,7 @@ export const createEvent = async (req, res) => {
     category,
   } = req.body;
 
-  // The useer is set in my middleware jwtAuth
+  // The userid is set in my middleware jwtAuth
   const userId = req.userId; // And this is set in my authentication middleware
 
   if (!userId) {
