@@ -2,9 +2,10 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import Ievent from "../models/eventModel.js";
+
 //this was imported so that i can convert string to object id
 import mongoose from "mongoose";
+import Ievents from "../models/eventModel.js";
 
 dotenv.config();
 
@@ -76,10 +77,11 @@ export const loginUser = async (req, res) => {
     );
 
     console.log("Token generated:", token);
+    console.log(user);
 
     res.status(200).json({
       status: "success",
-      message: `${user.role} created successfully`,
+      message: "login successful",
       token,
     });
   } catch (error) {
@@ -153,7 +155,7 @@ export const createEvent = async (req, res) => {
 
   try {
     // Creating a new event, and associating it with the logged-in user
-    const newEvent = new Ievent({
+    const newEvent = new Ievents({
       title,
       description,
       location,
