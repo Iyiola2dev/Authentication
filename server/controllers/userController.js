@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 //this was imported so that i can convert string to object id
 import mongoose from "mongoose";
 import Ievents from "../models/eventModel.js";
+import Category from "../models/categoryModel.js";
 
 dotenv.config();
 
@@ -179,5 +180,40 @@ export const createEvent = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error creating event", error: err.message });
+  }
+};
+
+////
+//category
+
+export const createCategory = async (req, res) => {
+  const {name}= req.body;
+
+  if(!name){
+    return res.status(400).json({message: "please provide a name for the category"})
+  }
+
+  try{
+    const newCategory = new Category ({name})
+     await newCategory.save();
+     res.status(201).json({message: "Category created successfully", category: newCategory})
+  }catch(err){
+    console.log(err);
+    res.status(500).json({message: "Error creating category", error: err.message})
+  }
+}
+
+
+
+export const getAllCategories = async (req, res) => {
+  try {
+    // Fetch all categories from the database
+    const categories = await Category.find({});
+    
+    // Return the categories in the response
+    res.status(200).json({ categories });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching categories", error: err.message });
   }
 };

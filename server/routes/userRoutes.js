@@ -1,5 +1,5 @@
 import express from "express";
-import { createEvent, createUser, loginUser } from "../controllers/userController.js";
+import { createCategory, createEvent, createUser, getAllCategories, loginUser } from "../controllers/userController.js";
 import { verifyJWToken } from "../middlewares/jwtAuth.js";
 
 //The router is named userRouter i could have named it anything
@@ -13,5 +13,11 @@ router.post("/register", createUser);
 
 //The route for creation of events
 router.post("/events",verifyJWToken, createEvent);
+
+// Route to create a new category
+router.post("/createCategories", createCategory);
+
+// Route to fetch all categories
+router.get("/all-categories", getAllCategories);
 
 export default router;
