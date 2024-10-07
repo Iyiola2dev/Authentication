@@ -6,7 +6,7 @@ const eventSchema = new Schema({
   location: { type: String, required: true },
 
   // createdAt: { type: Date, default: Date.now },
-  imageUrl: { type: String, required: true },
+  imageUrl: { type: Schema.Types.ObjectId, ref: "image" },  // Reference to Imageurl model
   startDateTime: { type: Date, required: true },  
   endDateTime: { type: Date },
   price: { type: String },
